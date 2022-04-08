@@ -1,0 +1,7 @@
+# python -m pip install -r requirements.txt
+# run the above command in the cmd prompt to install all packages
+# required libraries:
+
+pandas
+matplotlib
+seaborn
