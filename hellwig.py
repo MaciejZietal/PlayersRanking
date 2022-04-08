@@ -1,47 +1,16 @@
-import chardet
 import pandas as pd
-import csv
-from functions import clearData,Hellwig
+from functions import clearData,Hellwig, concatData
 
-#Finding proper encoding
-with open('data/PL_StandStats.csv', 'rb') as f:
-    enc = chardet.detect(f.read())
-    
-#Reading all files
+#Reading data
+data = concatData()
 
-PL_StandStats = pd.read_csv('data/PL_StandStats.csv', 
-                            encoding = enc['encoding'], delimiter=',', 
-                            quoting=csv.QUOTE_NONE)
-
-PL_Creation = pd.read_csv('data/PL_Creation.csv', 
-                            encoding = enc['encoding'], delimiter=',', 
-                            quoting=csv.QUOTE_NONE)
-PL_Creation = PL_Creation.iloc[:,2:]
-
-PL_Passes = pd.read_csv('data/PL_Passes.csv', 
-                            encoding = enc['encoding'], delimiter=',', 
-                            quoting=csv.QUOTE_NONE)
-PL_Passes = PL_Passes.iloc[:,2:]
-
-PL_Shoots = pd.read_csv('data/PL_Shoots.csv', 
-                            encoding = enc['encoding'], delimiter=',', 
-                            quoting=csv.QUOTE_NONE)
-PL_Shoots = PL_Shoots.iloc[:,2:]
-
-PL_Possesion = pd.read_csv('data/PL_Possesion.csv', 
-                            encoding = enc['encoding'], delimiter=',', 
-                            quoting=csv.QUOTE_NONE)
-PL_Possesion = PL_Possesion.iloc[:,2:]
-
-data = pd.concat([PL_StandStats, PL_Creation, PL_Passes, PL_Shoots, PL_Possesion],
-                 axis=1)
 #Cleaning data
 data = clearData(data)
 
 #Filtering out GKs
 data = data[data['Pos']!='GK']
 
-#Filtering out players with under 1k mins
+#Filtering out players with under 2k mins
 data = data[data['Min']>2000]
 
 #Changing destimulants to stimulants
