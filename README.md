@@ -18,3 +18,5 @@ Used data is from _https://fbref.com/_
 
 ## Results
 
+![HellwigRanking](https://user-images.githubusercontent.com/77171262/162632040-77a378a6-ba04-4a53-ae75-2ff7236eef4e.png)
+![TOPSISRanking](https://user-images.githubusercontent.com/77171262/162632047-e22eab5b-e0a7-429c-887d-90e01d64cb47.png)
