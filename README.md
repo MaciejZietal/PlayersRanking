@@ -27,3 +27,9 @@ In Hellwig's method the best player is Bruno Fernandes, second is Mason Mount an
 ![TOPSISRanking](https://user-images.githubusercontent.com/77171262/162632047-e22eab5b-e0a7-429c-887d-90e01d64cb47.png)
 
 In TOPSIS top3 is the same but Bruno is second while Kane is first.
+
+## TOP 5 statistics
+
+![HellwigGoals](https://user-images.githubusercontent.com/77171262/162633188-0fbb35c3-c286-40e1-8f74-70b85055c6c5.png)
+
+![HellwigAssists](https://user-images.githubusercontent.com/77171262/162633193-ea429ea2-c3f6-46d4-8e95-472b88c0d5fd.png)
