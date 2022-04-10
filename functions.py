@@ -4,6 +4,15 @@ import csv
 import chardet
 
 def concatData():
+    """
+    A function that reads and connect data for further analysis.
+
+    Returns
+    -------
+    data : pandas Data Frame
+        A data frame with connected data
+
+    """
     #Finding proper encoding
     with open('data/PL_StandStats.csv', 'rb') as f:
         enc = chardet.detect(f.read())
@@ -40,6 +49,20 @@ def concatData():
     return data
 
 def clearData(data):
+    """
+    A function that clears data.
+
+    Parameters
+    ----------
+    data : pandas Data Frame
+        A data frame with players statistics
+
+    Returns
+    -------
+    data : pandas Data Frame
+        A cleared data frame, ready for further analysis
+
+    """
     #Deleting numbers from Player names
     data['Player'] = data['Player'].str.split('\\').str[0]
     
@@ -66,6 +89,20 @@ def clearData(data):
     return data
 
 def standarize(data):
+    """
+    A function that make a standardization  of a data frame
+
+    Parameters
+    ----------
+    data : pandas Data Frame
+        A data frame with columns to standarization
+
+    Returns
+    -------
+    data : pandas Data Frame
+        A data frame with standarized columns
+
+    """
     nCols = data.shape[1]
     for i in range(nCols):
         m = statistics.mean(data.iloc[:,i])
@@ -75,6 +112,20 @@ def standarize(data):
     return data
 
 def findBest(dataStand):
+    """
+    A function that is finding best value in each column
+
+    Parameters
+    ----------
+    dataStand : pandas Data Frame
+        Standarized data frame.
+
+    Returns
+    -------
+    bests : list
+        A list containing highest values in each column
+
+    """
     nCols = dataStand.shape[1]
     bests = []
     for i in range(nCols):
@@ -84,6 +135,20 @@ def findBest(dataStand):
     return bests
 
 def distToBest(dataStand):
+    """
+    A function calculating distance to best values of each player
+
+    Parameters
+    ----------
+    dataStand : pandas Data Frame
+        Standarized data frame
+
+    Returns
+    -------
+    distances : pandas Data Frame
+        Data Frame with calculated total distance to best values.
+
+    """
     bests = findBest(dataStand)
     distances = dataStand.copy()
     
@@ -94,6 +159,22 @@ def distToBest(dataStand):
     return distances
 
 def ranking(distances, names):
+    """
+    A function calculating Hellwig ranking
+
+    Parameters
+    ----------
+    distances : pandas Data Frame
+        A data frame containing total distance to best values of each player.
+    names : list
+        A list of players names.
+
+    Returns
+    -------
+    ranking : pandas Data Frame
+        A data frame containing Hellwig ranking.
+
+    """
     m = statistics.mean(distances.iloc[:,-1])
     std = statistics.stdev(distances.iloc[:,-1])
     d0 = m + 2*std
@@ -106,6 +187,22 @@ def ranking(distances, names):
     
 
 def Hellwig(data, startCol):
+    """
+    A function calculating Hellwig ranking.
+
+    Parameters
+    ----------
+    data : pandas Data Frame
+        A data frame with players names and statistics.
+    startCol : integer
+        Index of the first column containing statistics.
+
+    Returns
+    -------
+    ranks : pandas Data Frame
+        A data frame with Hellwig ranking.
+
+    """
     names = list(data.iloc[:,1])
     dataStand = standarize(data.iloc[:,startCol:])
     distances = distToBest(dataStand)
@@ -115,7 +212,24 @@ def Hellwig(data, startCol):
 
 
 def TOPSIS(data, startCol, destimulants):
-    
+    """
+    A function calculating TOPSIS ranking.
+
+    Parameters
+    ----------
+    data : pandas Data Frame
+        A data frame containing players names and statistics.
+    startCol : integer
+        Index of the first column containing statistics.
+    destimulants : list
+        A list containing columns with destimulants.
+
+    Returns
+    -------
+    ranks : pandas Data Frame
+        A data frame with TOPSIS ranking.
+
+    """
     normalizedM = normalizedMatrix(data, startCol)
     stimulantsM = normalizedM.drop(destimulants, axis=1)
     destimulantsM = normalizedM[destimulants]
@@ -129,12 +243,44 @@ def TOPSIS(data, startCol, destimulants):
     return rank
 
 def normalizedMatrix(data, startCol):
+    """
+    A function normalizing data.
+
+    Parameters
+    ----------
+    data : pandas Data Frame
+    A data frame containing players names and statistics.
+    startCol : integer
+        Index of the first column containing statistics.
+
+    Returns
+    -------
+    normalizedMatrix : pandas Data Frame
+        A data frame containing normalized players statistics.
+
+    """
     sumSquare = list((data.iloc[:,startCol:].pow(2).sum())**(1/2))
     normalizedMatrix = data.iloc[:,7:].div(sumSquare)
     
     return normalizedMatrix
 
 def distToBests(normalizedStimulants, normalizedDestimulants):
+    """
+    A function calculating each player distance to the best statistics.
+
+    Parameters
+    ----------
+    normalizedStimulants : pandas Data Frame
+        A data frame containing normalized stimulants
+    normalizedDestimulants : pandas Data Frame
+        A data frame containing normalized destimulants
+
+    Returns
+    -------
+    sPlus : list
+        A list containing calculated S Plus value for each player.
+
+    """
     maximum = list(normalizedStimulants.max())
     minimum = list(normalizedDestimulants.min())
     
@@ -149,6 +295,22 @@ def distToBests(normalizedStimulants, normalizedDestimulants):
     return sPlus
 
 def distToWorsts(normalizedStimulants, normalizedDestimulants):
+    """
+    A function calculating each player distance to the worsts statistics.
+
+    Parameters
+    ----------
+    normalizedStimulants : pandas Data Frame
+        A data frame containing normalized stimulants
+    normalizedDestimulants : pandas Data Frame
+        A data frame containing normalized destimulants
+
+    Returns
+    -------
+    sMinus : list
+        A list containing calculated S Minus value for each player.
+
+    """
     minimum = list(normalizedStimulants.min())
     maximum = list(normalizedDestimulants.max())
     
@@ -163,12 +325,44 @@ def distToWorsts(normalizedStimulants, normalizedDestimulants):
     return sMinus
 
 def Pi(sPlus, sMinus):
+    """
+    A function calculating Pi value for each player
+
+    Parameters
+    ----------
+    sPlus : list
+        A list containing calculated S Plus value for each player.
+    sMinus : list
+        A list containing calculated S Minus value for each player.
+
+    Returns
+    -------
+    Pi : list
+        A list containing calculated pi value for each player.
+
+    """
     suM = [i + j for i, j  in zip(sPlus, sMinus)]
     Pi = [i / j  for i,j in zip(sMinus, suM)]
     
     return Pi
 
 def rankingTOPSIS(pi, players):
+    """
+    A function calculating TOPSIS ranking
+
+    Parameters
+    ----------
+    pi : list
+        A list containing calculated pi value for each player.
+    players : list
+        A list with players names.
+
+    Returns
+    -------
+    ranking : pandas Data Frame
+        A data frame with TOPSIS ranking.
+
+    """
     ranking = pd.DataFrame({'Player': players, 'Rank':pi})
     ranking.sort_values(by=['Rank'],inplace=True, ascending=False)
     
